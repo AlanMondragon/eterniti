@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="es" class="gala">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>El Archivo de Nuestra Eternidad</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,400;1,600&family=Pinyon+Script&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script>
+tailwind.config = {
+  theme: { extend: {
+    fontFamily: { serif: ['"Cormorant Garamond"','serif'], sans: ['"Plus Jakarta Sans"','sans-serif'], script: ['"Pinyon Script"','cursive'] },
+    colors: { alabaster:'#FAF6F0', espresso:'#1E1114', velvet:'#6B1D2F', crimson:'#4A121F', rosegold:'#C87D87', champagne:'#D4AF37', goldlight:'#F3E5AB' }
+  } }
+}
+</script>
+<style>
+:root{
+  --bg:#dcdcdc; --text:#1E1114; --card:rgba(255,252,247,.92); --border:rgba(197,155,39,.35);
+}
+html.gala{ --bg:#0D090B; --text:#FAF6F0; --card:rgba(26,17,21,.92); --border:rgba(212,175,55,.38); }
+*{ box-sizing:border-box; }
+html,body{ height:100%; margin:0; }
+body{
+  background:var(--bg); color:var(--text); overflow:hidden;
+  background-image:radial-gradient(rgba(197,155,39,.08) 1px, transparent 0); background-size:24px 24px;
+  transition:background-color .7s ease,color .7s ease; -webkit-tap-highlight-color:transparent;
+}
+.panel{
+  background:var(--card); border:1px solid var(--border);
+  backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
+  box-shadow:0 20px 50px -18px rgba(30,17,20,.25);
+}
+
+/* ---------- ESCENAS ---------- */
+.stage{
+  position:absolute; inset:0; display:flex; overflow-y:auto; overflow-x:hidden;
+  padding:4.75rem 1rem 5.5rem;
+  opacity:0; visibility:hidden; pointer-events:none;
+  transform:translateY(14px) scale(.985);
+  transition:opacity .7s ease, transform .7s ease, visibility 0s linear .7s;
+}
+.stage.active{ opacity:1; visibility:visible; pointer-events:auto; transform:none; z-index:10; transition:opacity .7s ease, transform .7s ease; }
+.stage-inner{ margin:auto; width:100%; }   /* centra sin cortar el contenido */
+
+::-webkit-scrollbar{ width:5px; } ::-webkit-scrollbar-thumb{ background:rgba(197,155,39,.45); border-radius:99px; }
+
+.gold-foil{
+  background:linear-gradient(120deg,#9A7418 0%,#D4AF37 35%,#F6E6A5 50%,#D4AF37 65%,#9A7418 100%);
+  background-size:200% auto; -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
+  animation:shimmer 5s linear infinite;
+}
+@keyframes shimmer{ to{ background-position:200% center; } }
+
+/* ---------- ACTO I ---------- */
+.ring-r{ border:1px solid rgba(212,175,55,.45); }
+.holding .ring-1{ animation:ripple 1.2s infinite ease-out; }
+.holding .ring-2{ animation:ripple 1.2s infinite ease-out .4s; }
+@keyframes ripple{ 0%{transform:scale(1);opacity:.9} 100%{transform:scale(1.5);opacity:0} }
+#hold-btn{ touch-action:none; }
+
+/* ---------- ACTO II: REPRODUCTOR ---------- */
+.cover{
+  width:min(15rem,60vw); aspect-ratio:1/1; border-radius:1.5rem; position:relative; overflow:hidden;
+  background:radial-gradient(circle at 30% 25%, #9E2A45, #6B1D2F 55%, #3D0E19 100%);
+  border:2px solid rgba(212,175,55,.6); box-shadow:0 25px 50px rgba(74,18,31,.45);
+  display:flex; align-items:center; justify-content:center;
+}
+.cover .heart{ font-size:4rem; color:#F3E5AB; filter:drop-shadow(0 0 18px rgba(243,229,171,.6)); }
+.playing .cover .heart{ animation:beat 1.1s infinite; }
+@keyframes beat{ 0%,100%{transform:scale(1)} 15%{transform:scale(1.18)} 30%{transform:scale(1)} 45%{transform:scale(1.12)} }
+.eq{ display:flex; align-items:flex-end; gap:3px; height:18px; }
+.eq span{ width:3px; height:4px; background:#D4AF37; border-radius:2px; }
+.playing .eq span{ animation:eq 1s infinite ease-in-out; }
+.playing .eq span:nth-child(2){ animation-delay:.2s } .playing .eq span:nth-child(3){ animation-delay:.4s } .playing .eq span:nth-child(4){ animation-delay:.6s }
+@keyframes eq{ 0%,100%{height:4px} 50%{height:18px} }
+input[type=range].seek{ -webkit-appearance:none; appearance:none; width:100%; height:5px; border-radius:99px; background:linear-gradient(to right,#D4AF37 var(--p,0%), rgba(212,175,55,.25) var(--p,0%)); outline:none; cursor:pointer; }
+input[type=range].seek::-webkit-slider-thumb{ -webkit-appearance:none; width:15px; height:15px; border-radius:50%; background:#D4AF37; border:2px solid #fff; box-shadow:0 1px 4px rgba(0,0,0,.4); }
+input[type=range].seek::-moz-range-thumb{ width:15px; height:15px; border-radius:50%; background:#D4AF37; border:2px solid #fff; }
+
+/* ---------- ACTO III ---------- */
+.chap{ display:none; }
+.chap.show{ display:grid; animation:fadeUp .6s ease both; }
+@keyframes fadeUp{ from{opacity:0; transform:translateY(10px)} to{opacity:1; transform:none} }
+.polaroid{ background:#FDFBF7; color:#1E1114; padding:.65rem .65rem 1rem; border-radius:.5rem; box-shadow:0 18px 35px rgba(0,0,0,.28); }
+.polaroid:nth-child(1){ transform:rotate(-2.5deg);} .polaroid:nth-child(2){ transform:rotate(1.5deg);} .polaroid:nth-child(3){ transform:rotate(-1deg);}
+.polaroid .ph{ aspect-ratio:1/1; width:100%; overflow:hidden; border-radius:.25rem; background:#2a181c; }
+.polaroid img{ width:100%; height:100%; object-fit:cover; display:block; filter:sepia(.85) blur(10px) brightness(.6) contrast(.8); transition:filter 2.6s cubic-bezier(.22,1,.36,1); }
+.polaroid img.revealed{ filter:none; }
+.wax{ background:radial-gradient(circle at 30% 30%, #9E2A45, #6B1D2F 65%, #3D0E19 100%); box-shadow:0 6px 14px rgba(74,18,31,.45), inset 0 2px 4px rgba(255,190,200,.35), inset 0 -3px 6px rgba(0,0,0,.5); }
+
+/* ---------- ACTO IV: CAJA ---------- */
+.box-wrap{ position:relative; width:17rem; height:15rem; margin:0 auto; perspective:700px; }
+.box-glow{ position:absolute; left:50%; top:35%; width:12rem; height:12rem; transform:translate(-50%,-50%); border-radius:50%; background:rgba(212,175,55,.22); filter:blur(36px); }
+.box-base{
+  position:absolute; bottom:0; left:50%; transform:translateX(-50%); width:14rem; height:6.5rem; z-index:20;
+  border-radius:0 0 1.5rem 1.5rem; border:2px solid #D4AF37; border-top-width:4px;
+  background:linear-gradient(to bottom,#4A121F,#2D0912); display:flex; align-items:center; justify-content:center; cursor:pointer;
+}
+.box-lid{
+  position:absolute; bottom:6.4rem; left:50%; margin-left:-7rem; width:14rem; height:5.5rem; z-index:30;
+  border-radius:1.5rem 1.5rem 0 0; border:2px solid rgba(212,175,55,.7);
+  background:linear-gradient(to bottom,#6B1D2F,#4A121F); transform-origin:bottom center;
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:.4rem; cursor:pointer;
+  transition:transform 1.1s cubic-bezier(.22,1,.36,1), opacity 1.1s ease;
+}
+.ring-fly{
+  position:absolute; left:50%; bottom:5.5rem; margin-left:-4.25rem; width:8.5rem; z-index:25; pointer-events:none;
+  opacity:0; transform:translateY(30px) scale(.7); transition:transform 1.3s cubic-bezier(.22,1,.36,1) .25s, opacity 1s ease .25s;
+}
+.box-open .box-lid{ transform:rotateX(-105deg); opacity:.55; }
+.box-open .ring-fly{ opacity:1; transform:translateY(-34px) scale(1.05); filter:drop-shadow(0 0 22px rgba(212,175,55,.8)); }
+#proposal{ opacity:.35; pointer-events:none; transition:opacity 1s ease; }
+#proposal.on{ opacity:1; pointer-events:auto; }
+
+/* ---------- ACTO V ---------- */
+#cert-his-sig-img{ mix-blend-mode:multiply; }
+html.gala #cert-his-sig-img{ filter:invert(1); mix-blend-mode:screen; }
+#sig-pad{ touch-action:none; width:100%; height:6.5rem; display:block; background:#FAF6F0; border:1px solid rgba(212,175,55,.4); border-radius:.75rem; cursor:crosshair; }
+</style>
+</head>
+<body class="font-sans">
+
+<canvas id="amb" class="fixed inset-0 w-full h-full pointer-events-none" style="z-index:0"></canvas>
+<canvas id="cel" class="fixed inset-0 w-full h-full pointer-events-none" style="z-index:40"></canvas>
+
+<!-- HEADER -->
+<header class="fixed top-0 left-0 right-0 z-30 flex items-center justify-between gap-2 px-3 sm:px-8 py-3 pointer-events-none">
+  <div class="pointer-events-auto panel flex items-center gap-2.5 px-4 py-1.5 rounded-full min-w-0">
+    <span class="w-2 h-2 rounded-full bg-champagne animate-pulse shrink-0"></span>
+    <span id="monogram" class="font-serif italic text-sm sm:text-base truncate">Edición Eterna</span>
+  </div>
+  <div class="pointer-events-auto flex items-center gap-2 shrink-0">
+    <button onclick="toggleMusic()" class="panel px-3.5 py-1.5 rounded-full text-xs flex items-center gap-2" title="Música">
+      <i id="audio-icon" class="fa-solid fa-volume-xmark text-rosegold"></i>
+    </button>
+  </div>
+</header>
+
+<!-- ACTO I -->
+<section id="act-1" class="stage active">
+  <div class="stage-inner">
+    <div class="max-w-xl mx-auto text-center flex flex-col items-center">
+      <p class="text-[11px] sm:text-xs uppercase tracking-[0.35em] text-rosegold mb-3 font-medium">Archivo Privado · Acceso Exclusivo</p>
+      <h1 class="font-serif text-5xl sm:text-7xl leading-[1.1] mb-4">Para <span id="her-1" class="italic gold-foil font-normal">Mi Amor</span></h1>
+      <p class="font-serif italic text-lg sm:text-2xl opacity-80 max-w-md mb-8 leading-relaxed">
+        “Hay tesoros que se guardan bajo llave; tú eres lo más preciado que tengo, y te guardo en cada latido.”
+      </p>
+
+      <div class="relative w-48 h-48 sm:w-52 sm:h-52 flex items-center justify-center mb-6">
+        <div class="ring-r ring-1 absolute inset-2 rounded-full pointer-events-none"></div>
+        <div class="ring-r ring-2 absolute inset-2 rounded-full pointer-events-none"></div>
+        <div id="hb-wrap" class="absolute inset-0 flex items-center justify-center">
+          <svg class="absolute inset-0 w-full h-full -rotate-90 pointer-events-none" viewBox="0 0 120 120">
+            <circle cx="60" cy="60" r="54" fill="none" stroke="rgba(212,175,55,.2)" stroke-width="2"/>
+            <circle id="hold-circle" cx="60" cy="60" r="54" fill="none" stroke="#D4AF37" stroke-width="3.5" stroke-dasharray="339.29" stroke-dashoffset="339.29" stroke-linecap="round"/>
+          </svg>
+          <button id="hold-btn" class="panel w-36 h-36 rounded-full flex flex-col items-center justify-center gap-2 cursor-pointer active:scale-95 transition-transform focus:outline-none">
+            <i class="fa-solid fa-fingerprint text-5xl text-champagne"></i>
+            <span id="hold-pct" class="text-[10px] uppercase tracking-[0.25em] font-semibold opacity-80">Mantén aquí</span>
+          </button>
+        </div>
+      </div>
+
+      <p id="hold-text" class="text-xs sm:text-sm uppercase tracking-[0.2em] opacity-75 mb-3 max-w-xs">Mantén presionado el sello para sincronizar nuestros latidos</p>
+      <button onclick="goToAct(2)" class="text-xs underline opacity-50 hover:opacity-90 transition-opacity">O entra directamente →</button>
+    </div>
+  </div>
+</section>
+
+<!-- ACTO II -->
+<section id="act-2" class="stage">
+  <div class="stage-inner">
+    <div class="max-w-5xl mx-auto">
+      <div class="text-center mb-6">
+        <span class="text-[10px] sm:text-xs uppercase tracking-[0.35em] text-champagne block mb-1">Acto II · La Banda Sonora de Mi Vida</span>
+        <h2 class="font-serif text-3xl sm:text-5xl">Nuestras <span class="italic gold-foil">Canciones</span></h2>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
+        <!-- Reproductor -->
+        <div id="player-card" class="panel rounded-3xl p-6 sm:p-8 flex flex-col items-center">
+          <div class="cover mb-5"><i class="fa-solid fa-heart heart"></i></div>
+
+          <div class="eq mb-2"><span></span><span></span><span></span><span></span></div>
+          <h3 id="p-title" class="font-serif italic text-2xl sm:text-3xl text-center text-champagne leading-tight">Canción 1</h3>
+          <p id="p-sub" class="text-xs uppercase tracking-[0.25em] opacity-60 mt-1 mb-4 text-center">Pista 01</p>
+
+          <div class="w-full">
+            <input id="seek" type="range" class="seek" min="0" max="100" step="0.1" value="0">
+            <div class="flex justify-between text-[11px] opacity-60 mt-1.5 font-medium">
+              <span id="t-cur">0:00</span><span id="t-dur">0:00</span>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-center gap-5 mt-3">
+            <button onclick="prevTrack()" class="w-11 h-11 rounded-full panel flex items-center justify-center" title="Anterior"><i class="fa-solid fa-backward-step text-champagne"></i></button>
+            <button onclick="togglePlay()" id="play-btn" class="w-16 h-16 rounded-full bg-velvet hover:bg-crimson text-alabaster flex items-center justify-center shadow-lg transition-all" title="Reproducir / Pausar">
+              <i id="play-icon" class="fa-solid fa-play text-xl text-goldlight"></i>
+            </button>
+            <button onclick="nextTrack()" class="w-11 h-11 rounded-full panel flex items-center justify-center" title="Siguiente"><i class="fa-solid fa-forward-step text-champagne"></i></button>
+          </div>
+
+          <p id="p-error" class="hidden mt-4 text-xs text-center text-rosegold"></p>
+        </div>
+
+        <!-- Letra + lista -->
+        <div class="flex flex-col gap-4">
+          <div class="panel rounded-3xl p-6 sm:p-8 flex-1">
+            <span id="t-tag" class="text-[11px] uppercase tracking-[0.25em] text-rosegold font-semibold block mb-3">Pista 01</span>
+            <h3 id="t-head" class="font-serif text-2xl sm:text-3xl italic text-champagne mb-3 leading-snug"></h3>
+            <p id="t-body" class="font-serif text-lg sm:text-xl leading-relaxed opacity-90"></p>
+
+            <div class="mt-5 pt-4 border-t border-champagne/20 space-y-2" id="tracklist"></div>
+          </div>
+          <div class="flex justify-end">
+            <button onclick="goToAct(3)" class="bg-velvet hover:bg-crimson text-alabaster px-6 py-3 rounded-full text-xs uppercase tracking-[0.2em] flex items-center gap-2.5 shadow-lg transition-all">
+              <span>Abrir el Libro</span><i class="fa-solid fa-arrow-right text-goldlight"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ACTO III -->
+<section id="act-3" class="stage">
+  <div class="stage-inner">
+    <div class="max-w-5xl mx-auto">
+      <div class="flex flex-col sm:flex-row items-center justify-between mb-5 gap-3">
+        <div class="text-center sm:text-left">
+          <span class="text-[10px] sm:text-xs uppercase tracking-[0.35em] text-champagne block">Acto III · Manuscrito Íntimo</span>
+          <h2 class="font-serif text-3xl sm:text-4xl">El Libro de <span class="italic gold-foil">Nuestra Historia</span></h2>
+        </div>
+        <div class="flex items-center gap-1.5 panel p-1.5 rounded-full">
+          <button id="chap-btn-0" onclick="showChap(0)" class="px-3.5 py-1.5 rounded-full text-xs font-medium">I. Carta</button>
+          <button id="chap-btn-1" onclick="showChap(1)" class="px-3.5 py-1.5 rounded-full text-xs font-medium">II. Recuerdos</button>
+          <button id="chap-btn-2" onclick="showChap(2)" class="px-3.5 py-1.5 rounded-full text-xs font-medium">III. Promesas</button>
+        </div>
+      </div>
+
+      <div class="panel rounded-3xl p-6 sm:p-10 relative">
+        <!-- Cap 0 -->
+        <div id="chap-0" class="chap grid-cols-1 md:grid-cols-2 gap-8 items-center">
+          <div class="space-y-4">
+            <div class="inline-block border-b border-champagne/40 pb-1 text-xs uppercase tracking-[0.25em] text-rosegold">Capítulo I · Lo Más Preciado</div>
+            <h3 class="font-serif text-3xl sm:text-4xl leading-tight">Si volviera a nacer mil veces, <span class="italic text-champagne">mil veces te buscaría a ti.</span></h3>
+            <p id="letter" class="font-serif text-lg sm:text-xl leading-relaxed opacity-90"></p>
+            <div class="flex items-center justify-between gap-3 pt-2">
+              <span class="text-xs uppercase tracking-widest opacity-60">Escrito con el alma,</span>
+              <span id="his-sign" class="font-script text-3xl text-champagne text-right"></span>
+            </div>
+          </div>
+
+          <div class="p-5 sm:p-6 rounded-2xl border border-champagne/30 bg-velvet/5 space-y-5">
+            <div class="flex items-center justify-between">
+              <span class="text-xs uppercase tracking-[0.2em] text-champagne font-semibold">Tiempo juntos</span>
+              <i class="fa-solid fa-hourglass-half text-champagne"></i>
+            </div>
+            <div class="grid grid-cols-4 gap-2 text-center">
+              <div class="py-2.5 px-1 rounded-xl panel"><span id="c-days" class="font-serif text-2xl sm:text-3xl font-bold text-champagne block">0</span><span class="text-[10px] uppercase tracking-widest opacity-70">Días</span></div>
+              <div class="py-2.5 px-1 rounded-xl panel"><span id="c-hours" class="font-serif text-2xl sm:text-3xl font-bold block">00</span><span class="text-[10px] uppercase tracking-widest opacity-70">Horas</span></div>
+              <div class="py-2.5 px-1 rounded-xl panel"><span id="c-mins" class="font-serif text-2xl sm:text-3xl font-bold block">00</span><span class="text-[10px] uppercase tracking-widest opacity-70">Min</span></div>
+              <div class="py-2.5 px-1 rounded-xl panel"><span id="c-secs" class="font-serif text-2xl sm:text-3xl font-bold text-rosegold block">00</span><span class="text-[10px] uppercase tracking-widest opacity-70">Seg</span></div>
+            </div>
+            <div class="pt-3 border-t border-champagne/20 text-center">
+              <p class="font-serif italic text-lg">Tiempo restante de mi amor por ti: <strong class="text-champagne">∞ Toda la eternidad</strong></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Cap 1: fotos -->
+        <div id="chap-1" class="chap grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-5 items-start py-2">
+          <div class="polaroid"><div class="ph"><img id="foto-1" alt="Recuerdo 1"></div><p class="font-script text-2xl text-center text-[#3D2329] mt-2">Mi lugar favorito</p></div>
+          <div class="polaroid"><div class="ph"><img id="foto-2" alt="Recuerdo 2"></div><p class="font-script text-2xl text-center text-[#3D2329] mt-2">Nuestra eternidad</p></div>
+          <div class="polaroid"><div class="ph"><img id="foto-3" alt="Recuerdo 3"></div><p class="font-script text-2xl text-center text-[#3D2329] mt-2">Siempre juntos</p></div>
+        </div>
+
+        <!-- Cap 2: promesas -->
+        <div id="chap-2" class="chap grid-cols-1 md:grid-cols-3 gap-4 items-stretch">
+          <div onclick="openVow(0)" class="p-5 rounded-2xl border border-champagne/35 bg-velvet/5 flex flex-col items-center text-center justify-between gap-3 cursor-pointer hover:border-champagne transition-all">
+            <span class="text-[10px] uppercase tracking-widest opacity-60">Promesa I · Fidelidad y Cuidado</span>
+            <div id="seal-0" class="w-16 h-16 rounded-full wax flex items-center justify-center text-goldlight"><i class="fa-solid fa-heart text-xl"></i></div>
+            <p id="vow-0" class="font-serif italic text-base opacity-80">Toca el sello para romperlo y leer esta promesa.</p>
+          </div>
+          <div onclick="openVow(1)" class="p-5 rounded-2xl border border-champagne/35 bg-velvet/5 flex flex-col items-center text-center justify-between gap-3 cursor-pointer hover:border-champagne transition-all">
+            <span class="text-[10px] uppercase tracking-widest opacity-60">Promesa II · Nuestro Hogar</span>
+            <div id="seal-1" class="w-16 h-16 rounded-full wax flex items-center justify-center text-goldlight"><i class="fa-solid fa-key text-xl"></i></div>
+            <p id="vow-1" class="font-serif italic text-base opacity-80">Toca el sello para romperlo y leer esta promesa.</p>
+          </div>
+          <div onclick="openVow(2)" class="p-5 rounded-2xl border border-champagne/35 bg-velvet/5 flex flex-col items-center text-center justify-between gap-3 cursor-pointer hover:border-champagne transition-all">
+            <span class="text-[10px] uppercase tracking-widest opacity-60">Promesa III · El Altar</span>
+            <div id="seal-2" class="w-16 h-16 rounded-full wax flex items-center justify-center text-goldlight"><i class="fa-solid fa-infinity text-xl"></i></div>
+            <p id="vow-2" class="font-serif italic text-base opacity-80">Toca el sello para romperlo y leer esta promesa.</p>
+          </div>
+        </div>
+
+        <div class="pt-5 mt-6 border-t border-champagne/20 flex items-center justify-between gap-3 flex-wrap">
+          <button onclick="showChap((curChap+1)%3)" class="text-xs uppercase tracking-widest text-champagne hover:underline flex items-center gap-1.5">
+            <i class="fa-solid fa-book-open"></i><span>Siguiente página</span>
+          </button>
+          <button onclick="goToAct(4)" class="bg-velvet hover:bg-crimson text-alabaster px-6 py-2.5 rounded-full text-xs uppercase tracking-[0.2em] flex items-center gap-2 shadow-lg transition-all">
+            <span>Ir al cofre</span><i class="fa-solid fa-gem text-goldlight"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ACTO IV -->
+<section id="act-4" class="stage">
+  <div class="stage-inner">
+    <div class="max-w-3xl mx-auto text-center">
+      <span class="text-[10px] sm:text-xs uppercase tracking-[0.35em] text-champagne block mb-2">Acto IV · La Pregunta Más Importante de Mi Vida</span>
+      <h2 class="font-serif text-3xl sm:text-5xl leading-tight mb-8">No quiero solo un capítulo contigo,<br><span class="italic gold-foil">quiero toda la eternidad.</span></h2>
+
+      <div id="box" class="box-wrap mb-6">
+        <div class="box-glow"></div>
+        <div class="ring-fly">
+          <svg viewBox="0 0 140 140" fill="none" class="w-full">
+            <path d="M70 6 L73 18 L85 21 L73 24 L70 36 L67 24 L55 21 L67 18 Z" fill="#F3E5AB" class="animate-pulse"/>
+            <path d="M34 24 L36 31 L43 33 L36 35 L34 42 L32 35 L25 33 L32 31 Z" fill="#fff" class="animate-pulse"/>
+            <path d="M106 24 L108 31 L115 33 L108 35 L106 42 L104 35 L97 33 L104 31 Z" fill="#fff" class="animate-pulse"/>
+            <polygon points="50,36 90,36 102,52 70,82 38,52" fill="url(#dia)" stroke="#fff" stroke-width="1.5"/>
+            <polyline points="38,52 102,52" stroke="#fff" stroke-width="1"/>
+            <polyline points="50,36 58,52 70,82 82,52 90,36" stroke="#fff" stroke-width="1" stroke-opacity=".8"/>
+            <path d="M53 66 L48 76 M87 66 L92 76" stroke="#D4AF37" stroke-width="3" stroke-linecap="round"/>
+            <circle cx="70" cy="98" r="28" stroke="url(#gld)" stroke-width="7"/>
+            <circle cx="70" cy="98" r="24.5" stroke="#FFF8DC" stroke-width=".9" stroke-opacity=".7"/>
+            <defs>
+              <linearGradient id="dia" x1="38" y1="36" x2="102" y2="82" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#fff"/><stop offset=".5" stop-color="#E6F4F1"/><stop offset="1" stop-color="#F3E5AB"/></linearGradient>
+              <linearGradient id="gld" x1="40" y1="70" x2="100" y2="126" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#F3E5AB"/><stop offset=".5" stop-color="#D4AF37"/><stop offset="1" stop-color="#9A7418"/></linearGradient>
+            </defs>
+          </svg>
+        </div>
+        <div class="box-lid" onclick="openBox()">
+          <div class="w-11 h-11 rounded-full border border-champagne/60 flex items-center justify-center bg-crimson/80"><i class="fa-solid fa-lock-open text-goldlight text-sm"></i></div>
+          <span class="text-[10px] uppercase tracking-[0.25em] text-goldlight font-medium">Toca para abrir</span>
+        </div>
+        <div class="box-base" onclick="openBox()"><span class="font-serif italic text-xs tracking-widest text-goldlight/80">Para siempre · Eternidad</span></div>
+      </div>
+
+      <div id="proposal" class="max-w-2xl mx-auto">
+        <p class="font-serif text-xl sm:text-2xl leading-relaxed mb-6">
+          “<span id="her-4" class="italic text-champagne font-semibold">Mi Amor</span>, eres lo más preciado que tengo en la vida. Quiero despertar a tu lado cada mañana, construir nuestra familia y amarte en esta vida y en todas las que sigan…
+          <strong class="block text-3xl sm:text-4xl mt-4 gold-foil italic">¿Te quieres casar conmigo?</strong>”
+        </p>
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+          <button onclick="sayYes()" class="w-full sm:w-auto bg-gradient-to-r from-[#B68D2C] via-[#F3E5AB] to-[#C59B27] text-espresso font-serif font-bold text-xl px-8 py-4 rounded-full shadow-[0_10px_40px_rgba(212,175,55,.5)] hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-3">
+            <i class="fa-solid fa-ring"></i><span>¡Sí, por toda la eternidad!</span>
+          </button>
+          <button onclick="sayYes()" class="w-full sm:w-auto panel hover:border-champagne px-8 py-4 rounded-full font-serif italic text-xl transition-all hover:scale-105">¡Mil veces sí, mi amor! ✨</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ACTO V -->
+<section id="act-5" class="stage">
+  <div class="stage-inner">
+    <div class="max-w-3xl mx-auto">
+      <div class="panel rounded-3xl p-6 sm:p-10 border-2 border-champagne">
+        <div class="text-center border-b border-champagne/30 pb-5 mb-6">
+          <span class="text-[10px] uppercase tracking-[0.4em] text-champagne block mb-2">★ Documento Oficial de Amor Infinito ★</span>
+          <h2 class="font-serif text-3xl sm:text-5xl gold-foil italic">Pacto de Matrimonio y Eternidad</h2>
+          <p class="text-xs sm:text-sm opacity-75 mt-2 font-serif italic">Por medio de este pacto, prometemos cuidarnos, respetarnos, casarnos y amarnos por toda la eternidad.</p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-6">
+          <div class="p-4 rounded-2xl border border-champagne/30 bg-velvet/5 text-center flex flex-col gap-2">
+            <span class="text-[10px] uppercase tracking-widest opacity-60">Prometido Eterno</span>
+            <div class="h-24 flex items-center justify-center">
+              <img id="cert-his-sig-img" src="data:image/png;base64,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" alt="Firma" class="max-h-full max-w-full object-contain">
+              <span id="sig-fallback" class="font-script text-4xl text-champagne" style="display:none"></span>
+            </div>
+            <span id="cert-his" class="text-xs font-serif italic opacity-80 border-t border-champagne/20 pt-2"></span>
+          </div>
+
+          <div class="p-4 rounded-2xl border-2 border-dashed border-champagne/60 text-center flex flex-col gap-2">
+            <div class="flex items-center justify-between text-[10px] uppercase tracking-widest px-1">
+              <span class="text-champagne font-semibold"><i class="fa-solid fa-pen-nib mr-1"></i>Firma aquí:</span>
+              <button onclick="clearSig()" class="underline opacity-60 hover:opacity-100">Borrar</button>
+            </div>
+            <canvas id="sig-pad"></canvas>
+            <span id="cert-her" class="text-xs font-serif italic opacity-85"></span>
+          </div>
+        </div>
+
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-champagne/30">
+          <div class="flex items-center gap-3">
+            <div class="w-12 h-12 rounded-full wax flex items-center justify-center text-goldlight shrink-0"><i class="fa-solid fa-stamp"></i></div>
+            <div class="text-left">
+              <span id="pact-date" class="text-xs font-semibold block"></span>
+              <span class="text-[11px] opacity-70">Validez: hoy, mañana y toda la eternidad ∞</span>
+            </div>
+          </div>
+          <div class="flex items-center gap-2.5 w-full sm:w-auto justify-end">
+            <button onclick="celebrate()" class="panel px-4 py-2.5 rounded-full text-xs" title="Lanzar pétalos"><i class="fa-solid fa-wand-magic-sparkles text-champagne"></i></button>
+            <button onclick="downloadPNG()" class="flex-1 sm:flex-initial bg-velvet hover:bg-crimson text-alabaster text-xs uppercase tracking-widest px-6 py-3 rounded-full shadow-lg flex items-center justify-center gap-2 transition-all">
+              <i class="fa-solid fa-download text-goldlight"></i><span>Guardar nuestro pacto</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- NAV -->
+<nav class="fixed bottom-4 left-1/2 -translate-x-1/2 z-30">
+  <div class="panel px-3 sm:px-5 py-2 rounded-full flex items-center gap-1.5 sm:gap-2 shadow-2xl">
+    <button id="nav-1" onclick="goToAct(1)" class="px-3 py-1.5 rounded-full text-xs font-medium flex items-center gap-1.5"><i class="fa-solid fa-fingerprint text-[11px]"></i><span class="hidden md:inline">I. Latido</span></button>
+    <button id="nav-2" onclick="goToAct(2)" class="px-3 py-1.5 rounded-full text-xs font-medium flex items-center gap-1.5"><i class="fa-solid fa-music text-[11px]"></i><span class="hidden md:inline">II. Canciones</span></button>
+    <button id="nav-3" onclick="goToAct(3)" class="px-3 py-1.5 rounded-full text-xs font-medium flex items-center gap-1.5"><i class="fa-solid fa-book-open text-[11px]"></i><span class="hidden md:inline">III. Libro</span></button>
+    <button id="nav-4" onclick="goToAct(4)" class="px-3 py-1.5 rounded-full text-xs font-medium flex items-center gap-1.5"><i class="fa-solid fa-gem text-[11px]"></i><span class="hidden md:inline">IV. Anillo</span></button>
+    <button id="nav-5" onclick="goToAct(5)" class="px-3 py-1.5 rounded-full text-xs font-medium flex items-center gap-1.5"><i class="fa-solid fa-signature text-[11px]"></i><span class="hidden md:inline">V. Pacto</span></button>
+  </div>
+</nav>
+
+<audio id="player" preload="auto"></audio>
+
+<script>
+/* =====================================================
+   CONFIGURACIÓN — pon los archivos en LA MISMA CARPETA
+   que este HTML: cancion1, cancion2, cancion3 (mp3/m4a/wav/ogg)
+   y foto1, foto2, foto3 (jpg/jpeg/png/webp).
+   Aquí puedes cambiar el nombre y el mensaje de cada canción.
+   ===================================================== */
+const TRACKS = [
+  { file:'cancion1', title:'Canción 1', tag:'Pista 01 · Confesión del Alma',
+    head:'“Eres lo más preciado que tengo en este mundo”',
+    body:'Antes de ti, los días solo pasaban. Contigo, cada segundo tiene sentido. No existe fortuna, estrella ni milagro en este universo que se compare con la dicha de mirarte a los ojos y saber que compartimos esta vida.' },
+  { file:'cancion2', title:'Canción 2', tag:'Pista 02 · Mi Paz y Mi Refugio',
+    head:'“En tu amor encontré el hogar que siempre busqué”',
+    body:'Cuando el mundo afuera hace ruido, tu voz es mi calma. Me enamora tu ternura, la nobleza de tu corazón y la forma en que haces que todo sea más hermoso con solo sonreír.' },
+  { file:'cancion3', title:'Canción 3', tag:'Pista 03 · Juramento de Eternidad',
+    head:'“Quiero estar contigo toda la eternidad y casarme contigo”',
+    body:'No te quiero solo por un tiempo; te quiero para cada amanecer, para cada viaje, para envejecer tomados de la mano y para amarte aún más allá del tiempo.' }
+];
+const AUDIO_EXTS = ['mp3','m4a','wav','ogg','aac','flac'];
+const IMG_EXTS   = ['jpg','jpeg','png','webp','JPG','PNG','jpeg'];
+
+const defaultConfig = {
+  herName:'Agatita mi amor',
+  hisName:'Alan De Agatita',
+  startDate:'2026-07-06',
+  letter:'“Quiero que sepas hoy y siempre que eres lo más preciado que tengo. Tu risa es mi melodía favorita, tu paz es mi hogar y tu compañía es el lugar al que siempre quiero volver. Una vida entera me parece corta para todo el amor que te tengo; por eso quiero la eternidad contigo.”'
+};
+let config;
+try { config = { ...defaultConfig, ...(JSON.parse(localStorage.getItem('archivoEternidadConfig')) || {}) }; }
+catch(e){ config = { ...defaultConfig }; }
+if(config.startDate==='2023-02-14' || config.startDate==='2023-07-06') config.startDate=defaultConfig.startDate;
+
+const $ = id => document.getElementById(id);
+const fmtDate = () => new Date().toLocaleDateString('es-MX',{day:'numeric',month:'long',year:'numeric'});
+
+/* ---------- Personalización ---------- */
+function syncUI(){
+  const first = s => (s||'').split(' ')[0];
+  $('her-1').textContent = config.herName;
+  $('her-4').textContent = config.herName;
+  $('his-sign').textContent = config.hisName;
+  $('sig-fallback').textContent = first(config.hisName);
+  $('cert-his').textContent = 'Firmado por: ' + config.hisName;
+  $('cert-her').textContent = 'Firmado por: ' + config.herName + ' (Mi futura esposa)';
+  $('letter').textContent = config.letter;
+  $('monogram').textContent = `${first(config.herName)} & ${first(config.hisName)} · Eternidad`;
+  $('pact-date').textContent = 'Fecha del pacto: ' + fmtDate();
+}
+/* ---------- Navegación ---------- */
+const NAV_ON  = 'px-3 py-1.5 rounded-full text-xs font-medium flex items-center gap-1.5 bg-velvet text-alabaster transition-all';
+const NAV_OFF = 'px-3 py-1.5 rounded-full text-xs font-medium flex items-center gap-1.5 opacity-70 hover:opacity-100 transition-all';
+function goToAct(n){
+  for(let i=1;i<=5;i++){
+    $('act-'+i).classList.toggle('active', i===n);
+    $('nav-'+i).className = i===n ? NAV_ON : NAV_OFF;
+  }
+  $('act-'+n).scrollTop = 0;
+  if(n===3) showChap(curChap, true);
+  if(n===5) setTimeout(resizeSig,150);
+}
+
+/* ---------- Solo el latido del corazón suena; las campanitas están desactivadas ---------- */
+let actx=null;
+function ac(){ if(!actx){ actx=new (window.AudioContext||window.webkitAudioContext)(); } if(actx.state==='suspended') actx.resume(); return actx; }
+function beat(p=70){
+  try{ if(navigator.vibrate) navigator.vibrate(40); }catch(e){}
+  try{ const c=ac(), t=c.currentTime, o=c.createOscillator(), g=c.createGain();
+    o.type='sine'; o.frequency.setValueAtTime(p,t); o.frequency.exponentialRampToValueAtTime(32,t+.22);
+    g.gain.setValueAtTime(.001,t); g.gain.linearRampToValueAtTime(.25,t+.03); g.gain.exponentialRampToValueAtTime(.001,t+.25);
+    o.connect(g); g.connect(c.destination); o.start(t); o.stop(t+.26);}catch(e){}
+}
+function chime(){}   // campanitas desactivadas en el resto de la página
+function ringChime(f,d=3){
+  try{ const c=ac(), t=c.currentTime, o=c.createOscillator(), g=c.createGain();
+    o.type='sine'; o.frequency.setValueAtTime(f,t);
+    g.gain.setValueAtTime(.001,t); g.gain.linearRampToValueAtTime(.06,t+.1); g.gain.exponentialRampToValueAtTime(.0008,t+d);
+    o.connect(g); g.connect(c.destination); o.start(t); o.stop(t+d);}catch(e){}
+}
+
+/* ---------- Reproductor de canciones ---------- */
+const player = $('player');
+player.volume = 0.15;
+let curTrack = 0;
+const goodExt = {};   // extensión que sí funcionó por canción
+let extTry = 0;
+
+function fmtTime(s){ if(!isFinite(s)) return '0:00'; const m=Math.floor(s/60), x=Math.floor(s%60); return m+':'+String(x).padStart(2,'0'); }
+
+function buildTracklist(){
+  $('tracklist').innerHTML = TRACKS.map((t,i)=>`
+    <button onclick="selectTrack(${i}, true)" id="tl-${i}" class="w-full text-left px-4 py-2.5 rounded-xl flex items-center justify-between gap-3 text-sm transition-all">
+      <span class="font-medium flex items-center gap-2 min-w-0"><i class="fa-solid fa-compact-disc"></i><span class="truncate">${String(i+1).padStart(2,'0')}. ${t.title}</span></span>
+      <span class="text-xs font-serif italic opacity-70 shrink-0" id="tl-state-${i}">Escuchar</span>
+    </button>`).join('');
+}
+function paintTrackUI(){
+  const t = TRACKS[curTrack];
+  $('p-title').textContent = t.title;
+  $('p-sub').textContent = 'Pista ' + String(curTrack+1).padStart(2,'0') + ' de ' + String(TRACKS.length).padStart(2,'0');
+  $('t-tag').textContent = t.tag;
+  $('t-head').textContent = t.head;
+  $('t-body').textContent = t.body;
+  TRACKS.forEach((_,i)=>{
+    const b=$('tl-'+i), on=i===curTrack;
+    b.className = 'w-full text-left px-4 py-2.5 rounded-xl flex items-center justify-between gap-3 text-sm transition-all ' + (on ? 'bg-velvet text-alabaster' : 'hover:bg-champagne/15');
+    $('tl-state-'+i).textContent = on ? (player.paused ? 'Seleccionada' : 'Sonando') : 'Escuchar';
+  });
+}
+function loadTrack(i, tryIdx=0){
+  curTrack = i; extTry = tryIdx;
+  const f = TRACKS[i].file;
+  const ext = goodExt[i] || AUDIO_EXTS[tryIdx];
+  $('p-error').classList.add('hidden');
+  player.src = `${f}.${ext}`;
+  player.load();
+  $('seek').value = 0; $('seek').style.setProperty('--p','0%'); $('t-cur').textContent='0:00'; $('t-dur').textContent='0:00';
+  paintTrackUI();
+}
+player.addEventListener('error', ()=>{
+  if(goodExt[curTrack]){ delete goodExt[curTrack]; loadTrack(curTrack,0); return; }
+  const next = extTry+1;
+  if(next < AUDIO_EXTS.length){ const wasPlaying=pendingPlay; loadTrack(curTrack,next); pendingPlay=wasPlaying; if(pendingPlay) player.play().catch(()=>{}); }
+  else {
+    const e=$('p-error'); e.classList.remove('hidden');
+    e.textContent = `No encontré "${TRACKS[curTrack].file}" (mp3, m4a, wav u ogg). Ponlo en la misma carpeta que este HTML.`;
+    setPlayingUI(false);
+  }
+});
+player.addEventListener('loadedmetadata', ()=>{ goodExt[curTrack]=player.src.split('.').pop().split('?')[0]; $('t-dur').textContent=fmtTime(player.duration); });
+player.addEventListener('timeupdate', ()=>{
+  if(!player.duration) return;
+  const p = player.currentTime/player.duration*100;
+  $('seek').value = p; $('seek').style.setProperty('--p', p+'%'); $('t-cur').textContent = fmtTime(player.currentTime);
+});
+player.addEventListener('ended', ()=> nextTrack());
+player.addEventListener('play',  ()=>{ pendingPlay=true;  setPlayingUI(true); });
+player.addEventListener('pause', ()=>{ setPlayingUI(false); });
+let pendingPlay=false;
+
+$('seek').addEventListener('input', e=>{
+  if(player.duration){ player.currentTime = e.target.value/100*player.duration; }
+  e.target.style.setProperty('--p', e.target.value+'%');
+});
+function setPlayingUI(on){
+  $('player-card').classList.toggle('playing', on);
+  $('play-icon').className = on ? 'fa-solid fa-pause text-xl text-goldlight' : 'fa-solid fa-play text-xl text-goldlight';
+  $('audio-icon').className = on ? 'fa-solid fa-volume-high text-champagne' : 'fa-solid fa-volume-xmark text-rosegold';
+  paintTrackUI();
+}
+function playCurrent(){ pendingPlay=true; return player.play().catch(()=>{}); }
+function togglePlay(){ if(player.paused) playCurrent(); else { pendingPlay=false; player.pause(); } }
+function toggleMusic(){ togglePlay(); }
+function selectTrack(i, autoplay){ loadTrack(i); if(autoplay) playCurrent(); chime(440+i*110,1.5); }
+function nextTrack(){ const was=!player.paused||pendingPlay; loadTrack((curTrack+1)%TRACKS.length); if(was) playCurrent(); }
+function prevTrack(){
+  if(player.currentTime>3){ player.currentTime=0; return; }
+  const was=!player.paused||pendingPlay; loadTrack((curTrack-1+TRACKS.length)%TRACKS.length); if(was) playCurrent();
+}
+
+/* ---------- Acto I: latido ---------- */
+let holdP=0, holdTimer=null;
+const holdBtn=$('hold-btn');
+function startHold(e){
+  e.preventDefault();
+  if(holdTimer) clearInterval(holdTimer);
+  $('hb-wrap').parentElement.classList.add('holding');
+  $('hold-text').textContent='Sincronizando nuestros corazones… no sueltes ❤️';
+  beat(70);
+  let n=0;
+  holdTimer=setInterval(()=>{
+    holdP+=4; n++;
+    if(n%6===0) beat(75+holdP*.4);
+    $('hold-circle').style.strokeDashoffset = 339.29 - 339.29*Math.min(100,holdP)/100;
+    $('hold-pct').textContent = Math.min(100,holdP)+'%';
+    if(holdP>=100){
+      clearInterval(holdTimer);
+      chime(523.25,2.5); setTimeout(()=>chime(659.25,2.5),120);
+      goToAct(2);
+      if(player.paused) playCurrent();
+    }
+  },65);
+}
+function stopHold(){
+  if(holdP>=100) return;
+  clearInterval(holdTimer); holdP=0;
+  $('hb-wrap').parentElement.classList.remove('holding');
+  $('hold-circle').style.strokeDashoffset=339.29;
+  $('hold-pct').textContent='Mantén aquí';
+  $('hold-text').textContent='Mantén presionado el sello para sincronizar nuestros latidos';
+}
+holdBtn.addEventListener('pointerdown', startHold);
+['pointerup','pointercancel','pointerleave'].forEach(ev=>holdBtn.addEventListener(ev, stopHold));
+holdBtn.addEventListener('contextmenu', e=>e.preventDefault());
+
+/* ---------- Acto III: libro ---------- */
+let curChap=0, photosRevealed=false;
+const CH_ON='px-3.5 py-1.5 rounded-full text-xs font-medium bg-velvet text-alabaster transition-all';
+const CH_OFF='px-3.5 py-1.5 rounded-full text-xs font-medium hover:bg-champagne/20 transition-all';
+function showChap(i, silent){
+  curChap=i;
+  for(let k=0;k<3;k++){
+    $('chap-'+k).classList.toggle('show', k===i);
+    $('chap-btn-'+k).className = k===i ? CH_ON : CH_OFF;
+  }
+  if(!silent) chime(523.25+i*65,1.2);
+  if(i===1) revealPhotos();
+}
+function loadPhoto(imgEl, base, idx=0){
+  if(idx>=IMG_EXTS.length){
+    imgEl.onerror=null;
+    imgEl.src='data:image/svg+xml;utf8,'+encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400"><rect width="100%" height="100%" fill="#2a181c"/><text x="50%" y="48%" fill="#F3E5AB" font-family="serif" font-size="22" text-anchor="middle">Falta ${base}.jpg</text><text x="50%" y="58%" fill="#C87D87" font-family="sans-serif" font-size="14" text-anchor="middle">ponla junto a este HTML</text></svg>`);
+    return;
+  }
+  imgEl.onerror=()=>loadPhoto(imgEl, base, idx+1);
+  imgEl.src=`${base}.${IMG_EXTS[idx]}`;
+}
+function revealPhotos(){
+  if(photosRevealed) return; photosRevealed=true;
+  [1,2,3].forEach((n,k)=> setTimeout(()=>{ $('foto-'+n).classList.add('revealed'); chime(659.25+k*60,2); }, 500+k*700));
+}
+const VOWS=[
+  'Prometo cuidarte como el tesoro más grande de mi vida, celebrar tus alegrías y sostener tu mano en cada tormenta.',
+  'Prometo construir contigo un hogar lleno de risas, paz, ternura y chocolate recién hecho cada mañana de nuestras vidas.',
+  'Prometo esperarte en el altar, mirarte a los ojos, besarte y amarte fielmente durante toda la eternidad.'
+];
+function openVow(i){
+  $('seal-'+i).innerHTML='<i class="fa-solid fa-check text-xl"></i>';
+  $('seal-'+i).classList.add('opacity-80');
+  const t=$('vow-'+i); t.textContent='“'+VOWS[i]+'”'; t.classList.add('text-champagne','font-semibold');
+  chime(587.33+i*80,2);
+}
+function updateClock(){
+  const start=new Date(config.startDate+'T00:00:00'); let d=Math.max(0,new Date()-start);
+  const days=Math.floor(d/864e5); d%=864e5;
+  const h=Math.floor(d/36e5); d%=36e5;
+  const m=Math.floor(d/6e4), s=Math.floor((d%6e4)/1000);
+  $('c-days').textContent=days; $('c-hours').textContent=String(h).padStart(2,'0'); $('c-mins').textContent=String(m).padStart(2,'0'); $('c-secs').textContent=String(s).padStart(2,'0');
+}
+
+/* ---------- Acto IV ---------- */
+let boxOpened=false;
+function openBox(){
+  if(boxOpened) return; boxOpened=true;
+  $('box').classList.add('box-open'); $('proposal').classList.add('on');
+  ringChime(523.25,3.5); setTimeout(()=>ringChime(659.25,3.5),160); setTimeout(()=>ringChime(783.99,4),320);
+  celebrate();
+  setTimeout(()=>$('proposal').scrollIntoView({behavior:'smooth',block:'center'}),900);
+}
+function sayYes(){
+  celebrate(); ringChime(523.25,3); setTimeout(()=>ringChime(783.99,3.5),150); setTimeout(()=>ringChime(1046.5,4.5),300);
+  setTimeout(()=>goToAct(5),700);
+}
+
+/* ---------- Acto V: firma ---------- */
+const sig=$('sig-pad'), sctx=sig.getContext('2d');
+let drawing=false, hasSig=false;
+function resizeSig(){
+  const r=sig.getBoundingClientRect(); if(!r.width) return;
+  const dpr=window.devicePixelRatio||1;
+  if(hasSig && sig.width===Math.round(r.width*dpr)) return;
+  sig.width=Math.round(r.width*dpr); sig.height=Math.round(r.height*dpr);
+  sctx.setTransform(dpr,0,0,dpr,0,0);
+  sctx.strokeStyle='#6B1D2F'; sctx.lineWidth=2.4; sctx.lineCap='round'; sctx.lineJoin='round';
+  hasSig=false;
+}
+function sigPos(e){ const r=sig.getBoundingClientRect(); return {x:e.clientX-r.left, y:e.clientY-r.top}; }
+sig.addEventListener('pointerdown', e=>{ e.preventDefault(); drawing=true; hasSig=true; sig.setPointerCapture(e.pointerId); const p=sigPos(e); sctx.beginPath(); sctx.moveTo(p.x,p.y); sctx.lineTo(p.x+.1,p.y+.1); sctx.stroke(); });
+sig.addEventListener('pointermove', e=>{ if(!drawing) return; const p=sigPos(e); sctx.lineTo(p.x,p.y); sctx.stroke(); });
+['pointerup','pointercancel'].forEach(ev=>sig.addEventListener(ev, ()=>{ drawing=false; }));
+function clearSig(){ sctx.save(); sctx.setTransform(1,0,0,1,0,0); sctx.clearRect(0,0,sig.width,sig.height); sctx.restore(); hasSig=false; }
+
+function downloadPNG(){
+  const W=1200,H=800, cv=document.createElement('canvas'); cv.width=W; cv.height=H; const c=cv.getContext('2d');
+  const first=s=>(s||'').split(' ')[0];
+  c.fillStyle='#FAF6F0'; c.fillRect(0,0,W,H);
+  c.strokeStyle='#D4AF37'; c.lineWidth=4; c.strokeRect(35,35,W-70,H-70); c.lineWidth=1.5; c.strokeRect(48,48,W-96,H-96);
+  c.textAlign='center';
+  c.fillStyle='#6B1D2F'; c.font='600 18px "Plus Jakarta Sans", sans-serif';
+  c.fillText('★ PACTO OFICIAL DE MATRIMONIO Y AMOR POR TODA LA ETERNIDAD ★',W/2,120);
+  c.fillStyle='#1E1114'; c.font='italic 68px "Cormorant Garamond", serif';
+  c.fillText(`${first(config.herName)}  &  ${first(config.hisName)}`,W/2,220);
+  c.font='italic 28px "Cormorant Garamond", serif'; c.fillStyle='#4A353B';
+  c.fillText('“Eres lo más preciado que tengo. Prometo amarte, cuidarte',W/2,320);
+  c.fillText('y caminar a tu lado en el matrimonio y por toda la eternidad.”',W/2,360);
+
+  const im=$('cert-his-sig-img');
+  if(im.style.display!=='none' && im.complete && im.naturalWidth){
+    const sc=Math.min(240/im.naturalWidth,100/im.naturalHeight);
+    const w=im.naturalWidth*sc, h=im.naturalHeight*sc;
+    c.drawImage(im, 350-w/2, 580-h-4, w, h);
+  } else {
+    c.fillStyle='#C59B27'; c.font='56px "Pinyon Script", cursive'; c.fillText(first(config.hisName),350,560);
+  }
+  if(hasSig) c.drawImage(sig,700,480,260,100);
+
+  c.strokeStyle='#C59B27'; c.lineWidth=1.5; c.beginPath(); c.moveTo(220,590); c.lineTo(480,590); c.moveTo(700,590); c.lineTo(960,590); c.stroke();
+  c.fillStyle='#1E1114'; c.font='16px "Plus Jakarta Sans", sans-serif';
+  c.fillText(config.hisName,350,620); c.fillText('Prometido Eterno',350,645);
+  c.fillText(config.herName,830,620); c.fillText('Mi Futura Esposa',830,645);
+  c.fillStyle='#6B1D2F'; c.fillText(`Sellado el ${fmtDate()} · Duración: toda la eternidad ∞`,W/2,710);
+
+  const a=document.createElement('a'); a.download='Pacto-Nuestra-Eternidad.png'; a.href=cv.toDataURL('image/png'); a.click();
+}
+
+/* ---------- Partículas ---------- */
+const amb=$('amb'), actxA=amb.getContext('2d'), cel=$('cel'), cctx=cel.getContext('2d');
+let dust=[], petals=[];
+function resizeAll(){ amb.width=cel.width=innerWidth; amb.height=cel.height=innerHeight; resizeSig(); }
+function initDust(){ dust=Array.from({length:50},()=>({x:Math.random()*innerWidth,y:Math.random()*innerHeight,r:Math.random()*2.2+.6,vy:-(Math.random()*.35+.1),vx:(Math.random()-.5)*.25,a:Math.random()*.6+.15})); }
+function celebrate(){
+  for(let i=0;i<75;i++) petals.push({x:Math.random()*cel.width,y:-20-Math.random()*150,vx:(Math.random()-.5)*2.5,vy:Math.random()*2.8+1.5,s:Math.random()*9+6,rot:Math.random()*6.28,vr:(Math.random()-.5)*.05,c:Math.random()>.45?'#8C1D35':'#D4AF37',a:1});
+}
+function loop(){
+  actxA.clearRect(0,0,amb.width,amb.height);
+  for(const d of dust){
+    d.x+=d.vx; d.y+=d.vy;
+    if(d.y<-10) d.y=amb.height+10; if(d.x<-10) d.x=amb.width+10; if(d.x>amb.width+10) d.x=-10;
+    actxA.globalAlpha=d.a; actxA.fillStyle='#D4AF37'; actxA.beginPath(); actxA.arc(d.x,d.y,d.r,0,6.283); actxA.fill();
+  }
+  actxA.globalAlpha=1;
+  cctx.clearRect(0,0,cel.width,cel.height);
+  for(let i=petals.length-1;i>=0;i--){
+    const p=petals[i]; p.x+=p.vx+Math.sin(p.y*.02)*.5; p.y+=p.vy; p.rot+=p.vr;
+    if(p.y>cel.height*.85) p.a-=.015;
+    cctx.save(); cctx.translate(p.x,p.y); cctx.rotate(p.rot); cctx.globalAlpha=Math.max(0,p.a); cctx.fillStyle=p.c;
+    cctx.beginPath(); cctx.ellipse(0,0,p.s,p.s*.6,0,0,6.283); cctx.fill(); cctx.restore();
+    if(p.a<=0) petals.splice(i,1);
+  }
+  requestAnimationFrame(loop);
+}
+
+/* ---------- Inicio ---------- */
+window.addEventListener('resize', resizeAll);
+window.addEventListener('load', ()=>{
+  syncUI(); buildTracklist(); loadTrack(0);
+  [1,2,3].forEach(n=>loadPhoto($('foto-'+n), 'foto'+n));
+  showChap(0, true);
+  goToAct(1);
+  updateClock(); setInterval(updateClock,1000);
+  resizeAll(); initDust(); loop();
+});
+</script>
+</body>
+</html>
